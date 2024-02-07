@@ -1,0 +1,12 @@
+- name: To install Maven and Docker
+  hosts: webserver
+  become: true
+  tasks:
+  - name: Update the Apt repo
+    command: sudo apt-get update
+  - name: Install the maven
+    package: name=maven state=present
+  - name: Install the Docker
+    package: name=docker-ce state=present
+  - name: start the Docker service
+    service: name=docker state=started
