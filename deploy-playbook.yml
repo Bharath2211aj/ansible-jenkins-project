@@ -1,0 +1,17 @@
+- name: playbook to deploy
+  hosts: webserver
+  become: true
+  vars:
+   repo_path: https://github.com/Sonal0409/DevOpsCodeDemo.git
+   des_path: /tmp/project-app
+  tasks:
+  - name: clone the repo in the workers node
+    git: repo={{ repo_path }} dest={{ des_path }}
+  - name: run the maven to build the code
+    command: chdir={{ des_path }} mvn package
+  - name: copy the war file form target folder to project folder
+    copy: src=/tmp/project-app/target/addressbook.war dest=/tmp/project-app remote_src=yes
+  - name: Build the docker Image
+    command: chdir={{ des_path }} docker build -t project-app .
+  - name: Run the Docker image
+    command: docker run -d -P project-app                                     
